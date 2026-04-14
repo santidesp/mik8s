@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/sarandesp/mik8s.git' 
+    repoURL: 'https://github.com/santidesp/mik8s.git' 
     targetRevision: HEAD
     path: infrastructure/crossplane-setup 
   destination:

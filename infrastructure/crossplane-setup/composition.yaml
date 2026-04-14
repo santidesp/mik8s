@@ -1,5 +1,5 @@
 # infrastructure/crossplane-setup/composition.yaml
-apiVersion: api.crossplane.io/v1
+apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
   name: valkey-local
