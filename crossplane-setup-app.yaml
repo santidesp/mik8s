@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane-infra-setup
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/sarandesp/mik8s.git' 
+    targetRevision: HEAD
+    path: infrastructure/crossplane-setup 
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: crossplane-system # Normalmente se despliega aquí o en un namespace global
+  syncPolicy:
+    automated:
+      prune: true    # Si borras un archivo en Git, ArgoCD lo borra en el cluster
+      selfHeal: true # Si alguien toca el cluster manualmente, ArgoCD lo corrige
+    syncOptions:
+    - CreateNamespace=true
