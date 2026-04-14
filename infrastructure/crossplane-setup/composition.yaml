@@ -28,6 +28,10 @@ spec:
                 image: valkey/valkey:7.2 # Licencia abierta
                 ports:
                 - containerPort: 6379
+      patches:
+        # Este parche copia el namespace del Claim al Deployment
+        - fromFieldPath: "metadata.namespace"
+          toFieldPath: "metadata.namespace"
     - name: valkey-service
       base:
         apiVersion: v1
