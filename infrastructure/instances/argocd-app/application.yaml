@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/santidesp/mik8s.git'
     targetRevision: HEAD
-    path: infrastructure/instances # Apuntando a donde está el Claim
+    path: infrastructure/instances/manifests
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
