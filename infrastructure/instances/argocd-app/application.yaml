@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: valkey-instances
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/santidesp/mik8s.git'
+    targetRevision: HEAD
+    path: infrastructure/instances # Apuntando a donde está el Claim
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
