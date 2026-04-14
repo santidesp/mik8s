@@ -1,0 +1,41 @@
+# infrastructure/crossplane-setup/composition.yaml
+apiVersion: api.crossplane.io/v1
+kind: Composition
+metadata:
+  name: valkey-local
+  labels:
+    provider: local
+spec:
+  compositeTypeRef:
+    apiVersion: database.example.org/v1alpha1
+    kind: XValkey
+  resources:
+    - name: valkey-deployment
+      base:
+        apiVersion: apps/v1
+        kind: Deployment
+        spec:
+          selector:
+            matchLabels:
+              app: valkey
+          template:
+            metadata:
+              labels:
+                app: valkey
+            spec:
+              containers:
+              - name: valkey
+                image: valkey/valkey:7.2 # Licencia abierta
+                ports:
+                - containerPort: 6379
+    - name: valkey-service
+      base:
+        apiVersion: v1
+        kind: Service
+        spec:
+          selector:
+            matchLabels:
+              app: valkey
+          ports:
+          - port: 6379
+            targetPort: 6379

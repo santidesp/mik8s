@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis-managed-by-argo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://charts.bitnami.com/bitnami'
+    chart: redis
+    targetRevision: 18.x.x
+    helm:
+      values: |
+        image:
+          tag: latest
+        master:
+          persistence:
+            enabled: false
+        auth:
+          enabled: false
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: redis-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

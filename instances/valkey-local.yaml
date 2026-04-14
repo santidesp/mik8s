@@ -1,0 +1,11 @@
+# infrastructure/instances/valkey-local.yaml
+apiVersion: database.example.org/v1alpha1
+kind: ValkeyClaim
+metadata:
+  name: my-valkey-db
+  namespace: default
+spec:
+  storageGB: 1
+  compositionSelector:
+    matchLabels:
+      provider: local # Cuando pases a AWS, cambiarás esto a 'aws'

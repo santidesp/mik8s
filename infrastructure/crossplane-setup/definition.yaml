@@ -1,0 +1,26 @@
+# infrastructure/crossplane-setup/definition.yaml
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xvalkeys.database.example.org
+spec:
+  group: database.example.org
+  names:
+    kind: XValkey
+    plural: xvalkeys
+  claimNames:
+    kind: ValkeyClaim
+    plural: valkeyclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              storageGB:
+                type: integer
