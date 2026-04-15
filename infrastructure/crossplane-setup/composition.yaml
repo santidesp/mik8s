@@ -1,4 +1,3 @@
-# infrastructure/crossplane-setup/composition.yaml
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
@@ -10,36 +9,115 @@ spec:
     apiVersion: database.example.org/v1alpha1
     kind: XValkey
   resources:
+    - name: valkey-pvc
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        spec:
+          providerConfigRef:
+            name: default
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: PersistentVolumeClaim
+              metadata:
+                namespace: default
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
+      patches:
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-pvc"
+        - fromFieldPath: "spec.claimRef.namespace"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - fromFieldPath: "spec.storageGB"
+          toFieldPath: "spec.forProvider.manifest.spec.resources.requests.storage"
+          transforms:
+            - type: string
+              string:
+                fmt: "%dGi"
     - name: valkey-deployment
       base:
-        apiVersion: apps/v1
-        kind: Deployment
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
         spec:
-          selector:
-            matchLabels:
-              app: valkey
-          template:
-            metadata:
-              labels:
-                app: valkey
-            spec:
-              containers:
-              - name: valkey
-                image: valkey/valkey:7.2 # Licencia abierta
-                ports:
-                - containerPort: 6379
+          providerConfigRef:
+            name: default
+          forProvider:
+            manifest:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                namespace: default
+              spec:
+                selector:
+                  matchLabels:
+                    app: valkey
+                template:
+                  metadata:
+                    labels:
+                      app: valkey
+                  spec:
+                    containers:
+                    - name: valkey
+                      image: valkey/valkey:7.2
+                      ports:
+                      - containerPort: 6379
+                      volumeMounts:
+                      - name: data
+                        mountPath: /data
+                    volumes:
+                    - name: data
+                      persistentVolumeClaim:
+                        claimName: placeholder
       patches:
-        # Este parche copia el namespace del Claim al Deployment
-        - fromFieldPath: "metadata.namespace"
-          toFieldPath: "metadata.namespace"
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-deployment"
+        - fromFieldPath: "spec.claimRef.namespace"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.spec.template.spec.volumes[0].persistentVolumeClaim.claimName"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-pvc"
     - name: valkey-service
       base:
-        apiVersion: v1
-        kind: Service
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
         spec:
-          selector:
-            matchLabels:
-              app: valkey
-          ports:
-          - port: 6379
-            targetPort: 6379
+          providerConfigRef:
+            name: default
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: Service
+              metadata:
+                namespace: default
+              spec:
+                selector:
+                  matchLabels:
+                    app: valkey
+                ports:
+                - port: 6379
+                  targetPort: 6379
+      patches:
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-svc"
+        - fromFieldPath: "spec.claimRef.namespace"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"

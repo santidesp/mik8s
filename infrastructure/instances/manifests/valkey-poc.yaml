@@ -1,4 +1,3 @@
-# infrastructure/instances/valkey-local.yaml
 apiVersion: database.example.org/v1alpha1
 kind: ValkeyClaim
 metadata:
