@@ -3,6 +3,8 @@ apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
   name: xvalkeys.database.example.org
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   group: database.example.org
   names:
