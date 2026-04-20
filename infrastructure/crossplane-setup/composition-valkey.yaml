@@ -109,8 +109,7 @@ spec:
                 namespace: default
               spec:
                 selector:
-                  matchLabels:
-                    app: valkey
+                  app: valkey
                 ports:
                 - port: 6379
                   targetPort: 6379
