@@ -1,0 +1,10 @@
+apiVersion: database.example.org/v1alpha1
+kind: RedisClaim
+metadata:
+  name: my-redis-db
+  namespace: default
+spec:
+  storageGB: 1
+  compositionSelector:
+    matchLabels:
+      provider: local # Cuando pases a AWS, cambiarás esto a 'aws'
