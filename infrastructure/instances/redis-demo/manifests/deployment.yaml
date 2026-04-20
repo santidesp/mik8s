@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-demo-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-demo-app
+  template:
+    metadata:
+      labels:
+        app: redis-demo-app
+    spec:
+      containers:
+      - name: app
+        image: python:3.12-alpine
+        command:
+        - sh
+        - -c
+        - pip install --no-cache-dir flask redis && python /app/app.py
+        env:
+        - name: REDIS_HOST
+          value: my-redis-db-svc
+        - name: REDIS_PORT
+          value: "6379"
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        volumeMounts:
+        - name: app-code
+          mountPath: /app
+      volumes:
+      - name: app-code
+        configMap:
+          name: redis-demo-app

@@ -31,7 +31,7 @@ spec:
                   requests:
                     storage: 1Gi
       patches:
-        - fromFieldPath: "metadata.name"
+        - fromFieldPath: "spec.claimRef.name"
           toFieldPath: "spec.forProvider.manifest.metadata.name"
           transforms:
             - type: string
@@ -61,11 +61,11 @@ spec:
               spec:
                 selector:
                   matchLabels:
-                    app: valkey
+                    app: valkey-placeholder
                 template:
                   metadata:
                     labels:
-                      app: valkey
+                      app: valkey-placeholder
                   spec:
                     containers:
                     - name: valkey
@@ -80,7 +80,7 @@ spec:
                       persistentVolumeClaim:
                         claimName: placeholder
       patches:
-        - fromFieldPath: "metadata.name"
+        - fromFieldPath: "spec.claimRef.name"
           toFieldPath: "spec.forProvider.manifest.metadata.name"
           transforms:
             - type: string
@@ -88,12 +88,16 @@ spec:
                 fmt: "%s-deployment"
         - fromFieldPath: "spec.claimRef.namespace"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
-        - fromFieldPath: "metadata.name"
+        - fromFieldPath: "spec.claimRef.name"
           toFieldPath: "spec.forProvider.manifest.spec.template.spec.volumes[0].persistentVolumeClaim.claimName"
           transforms:
             - type: string
               string:
                 fmt: "%s-pvc"
+        - fromFieldPath: "spec.claimRef.name"
+          toFieldPath: "spec.forProvider.manifest.spec.selector.matchLabels.app"
+        - fromFieldPath: "spec.claimRef.name"
+          toFieldPath: "spec.forProvider.manifest.spec.template.metadata.labels.app"
     - name: valkey-service
       base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -109,12 +113,12 @@ spec:
                 namespace: default
               spec:
                 selector:
-                  app: valkey
+                  app: valkey-placeholder
                 ports:
                 - port: 6379
                   targetPort: 6379
       patches:
-        - fromFieldPath: "metadata.name"
+        - fromFieldPath: "spec.claimRef.name"
           toFieldPath: "spec.forProvider.manifest.metadata.name"
           transforms:
             - type: string
@@ -122,3 +126,5 @@ spec:
                 fmt: "%s-svc"
         - fromFieldPath: "spec.claimRef.namespace"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - fromFieldPath: "spec.claimRef.name"
+          toFieldPath: "spec.forProvider.manifest.spec.selector.app"
