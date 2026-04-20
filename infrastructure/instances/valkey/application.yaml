@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/santidesp/mik8s.git'
     targetRevision: HEAD
-    path: infrastructure/instances/manifests
+    path: infrastructure/instances/valkey/manifests
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default

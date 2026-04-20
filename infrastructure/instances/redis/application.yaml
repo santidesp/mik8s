@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/santidesp/mik8s.git'
     targetRevision: HEAD
-    path: app-test-redis/manifests
+    path: infrastructure/instances/redis/manifests
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
