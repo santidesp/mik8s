@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-demo-app
+  name: valkey-demo-app
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-demo-app
+      app: valkey-demo-app
   template:
     metadata:
       labels:
-        app: redis-demo-app
+        app: valkey-demo-app
     spec:
       containers:
       - name: app
-        image: redis-demo-app:local
+        image: valkey-demo-app:local
         imagePullPolicy: IfNotPresent
         env:
-        - name: REDIS_HOST
-          value: my-redis-db-svc
-        - name: REDIS_PORT
+        - name: VALKEY_HOST
+          value: my-valkey-db-svc
+        - name: VALKEY_PORT
           value: "6379"
         ports:
         - containerPort: 8080
